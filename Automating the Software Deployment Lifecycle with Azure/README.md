@@ -13,7 +13,7 @@ Follow these steps to setup the demo environment:
 
 This was presented:
 
-* 2 July 2019 - [North East Azure User Group](https://www.meetup.com/North-East-Azure-User-Group/events/261825832/) - [Automating the Software Deployment Lifecycle with Chocolatey, Jenkins and PowerShell](https://github.com/pauby/presentations/tree/azurenortheast-0719/Automating%20the%20Software%20Deployment%20Lifecycle) - [[Slides](https://github.com/pauby/presentations/blob/master/Automating%20the%20Software%20Deployment%20Lifecycle%20with%20Azure/Automating%20the%20Software%20Deployment%20Lifecycle%20with%20Chocolatey%2C%20Jenkins%20and%20PowerShell%20-%2020910702%20-%20North%20East%20Azure%20User%20Group.pdf)] | [[Code](https://github.com/pauby/presentations/tree/master/Automating%20the%20Software%20Deployment%20Lifecycle%20with%20Azure)]
+* 2 July 2019 - [North East Azure User Group](https://www.meetup.com/North-East-Azure-User-Group/events/261825832/) - [Automating the Software Deployment Lifecycle with Chocolatey, Jenkins and PowerShell](https://github.com/pauby/presentations/tree/master/Automating%20the%20Software%20Deployment%20Lifecycle%20with%20Azure) - [[Slides](https://github.com/pauby/presentations/blob/master/Automating%20the%20Software%20Deployment%20Lifecycle%20with%20Azure/Automating%20the%20Software%20Deployment%20Lifecycle%20with%20Chocolatey%2C%20Jenkins%20and%20PowerShell%20-%2020910702%20-%20North%20East%20Azure%20User%20Group.pdf)] | [[Code](https://github.com/pauby/presentations/tree/master/Automating%20the%20Software%20Deployment%20Lifecycle%20with%20Azure)]
 
 ## Resources
 
