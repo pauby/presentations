@@ -6,6 +6,8 @@ Learn the fundamentals of Git to get started in contributing to open source ... 
 
 This was presented:
 
+* 13 September 2019 - [DATA:Scotland](https://datascotland.org) - [Git Fundamentals](https://github.com/pauby/presentations/tree/master/Git%20Fundamentals) - [[Slides](https://github.com/pauby/presentations/blob/master/Git%20Fundamentals/Git%20Fundamentals%20-%2020190913%20-%20DATAScotland.pdf)] | [[Code](https://github.com/pauby/presentations/tree/master/Git%20Fundamentals)]
+
 * 27 November 2018 - [Newcastle Data Platform and Cloud (DPaC) User Group](https://www.meetup.com/Newcastle_DPaC/events/256028261/) - [Git Fundamentals](https://github.com/pauby/presentations/tree/master/Git%20Fundamentals) - [[Slides](https://github.com/pauby/presentations/blob/master/Git%20Fundamentals/Git%20Fundamentals%20-%2020181127%20-%20DPaC%20UG.pdf)] | [[Code](https://github.com/pauby/presentations/tree/master/Git%20Fundamentals)]
 
 * 15 September 2018 - [French PowerShell Saturday, Paris](https://www.meetup.com/FrenchPSUG/events/247765024/) - [Git Fundamentals](https://github.com/pauby/presentations/tree/master/Git%20Fundamentals) - [[Slides](https://github.com/pauby/presentations/blob/master/Git%20Fundamentals/Git%20Fundamentals.pdf)] | [[Code](https://github.com/pauby/presentations/tree/master/Git%20Fundamentals)] | [[Blog](https://blog.pauby.com/post/speaking-french-powershell-saturday/)]
