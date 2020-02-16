@@ -14,10 +14,15 @@ Get-ChildItem -Recurse |
     sort length -Descending |
     Remove-Item -force
 
-
 git add .
 git commit -m 'Reset repository'
 git push -f
+
+Set-Content -Path 'setup.ps1' -Value 'cd c:\windows'
+
+git add .
+git commit -m 'Add setup'
+git push
 
 Set-Location 'C:\gitfundamentalstalk'
 Remove-Item * -Force -Recurse

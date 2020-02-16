@@ -3,6 +3,7 @@
 #
 # Can everybody see the code okay?
 #
+break
 rm function:prompt # remove it just in case posh-git detects it as a custom one
 Import-Module posh-git -Force
 $GitPromptSettings.DefaultPromptPrefix = '`n`n'
@@ -15,80 +16,112 @@ Set-Location $rootPath
 #Remove-Item * -Force -Recurse
 Write-Host "`n`nCan everybody see the code okay?`n`n" -foregroundcolor green
 
+# ===========================================
 #
-# Clone the demo repository
+# DEMO 1
 #
+# ===========================================
 
+# Lets have a look at the code on GitHub
+Start-Process 'https://github.com/psdevopsug/git-fundamentals-demo'
+
+# Clone the remote repository
 git clone https://github.com/psdevopsug/git-fundamentals-demo
-git clone https://github.com/psdevopsug/git-fundamentals-demo git-fundamentals-demo-contributor
-Set-Location (Join-Path -Path $rootPath -ChildPath $myRepoPath)
+#git clone https://github.com/psdevopsug/git-fundamentals-demo git-fundamentals-demo-contributor
+cd (Join-Path -Path $rootPath -ChildPath $myRepoPath)
+
+# Lets have a look at what is in there
+ls
+
+# Lets have a look at the remote URL(s)
+git remote              # not helpful
+git remote --verbose    # helpful
+
+# ===========================================
+#
+# DEMO 2
+#
+# ===========================================
 
 # Check the status
-
-Get-ChildItem
+ls
 git status
-git remote
-git remote -v
 
-#
-# We are another contributor and added some aliases
-# cd c:\windows
-# ==============================================
+# Lets make a change to the repository - update a file
+Set-Content -Path 'setup.ps1' -Value 'gci c:\windows'
 
-Set-Location (Join-Path -Path $rootPath -ChildPath $contributorRepoPath)
-Set-Content -Path 'setup.ps1' -Value 'cd c:\windows'
+# Lets look at the status of the repository now
+git status
+git diff setup.ps1
+
+# Lets add this new file to the staging area and have a look at the status
 git add setup.ps1
-git commit -m 'Add setup file'
-git push
+git status
 
+# Lets commit this new file to the
+git commit --message 'Add setup file'
+git push origin
+
+# Lets have a look at the code on GitHub
+Start-Process 'https://github.com/psdevopsug/git-fundamentals-demo'
+
+# ===========================================
 #
-# Move to our repository
-# =======================
-
-# A colleague has added some code to the repository
-start-process 'https://github.com/psdevopsug/git-fundamentals-demo'
-
-Set-Location (Join-Path -Path $rootPath -ChildPath $myRepoPath)
+# DEMO 3 - Branching
+#
+# ===========================================
 
 # Check the status
 git status
-Get-ChildItem
-git remote -v
 
-# Lets pull down the changes
-git pull
+# Create a branch
+git checkout -b fix-alias
 
-# Lets have a look at the files now in our repository
-Get-ChildItem
+# Check the status
+git status
 
-# Open the setup.ps1 file and the alias 'ls'
+# Look at the setup.ps1 and change the alias gci to Get-ChildItem
 code setup.ps1
 
-# Now lets see the status, stage and commit this change
+# Check the status
 git status
 
-# Lets add the file, using a dot this time
+# Get the differences
+git diff
+
+# Add all of the changes to staged
 git add .
+
+# Check the status
 git status
 
-# Lets commit this and push it
-git commit -m 'Add directory list'
-git push
+# Commit and push it
+git commit --message 'Removed the alias'
+git push origin     # we get an error message!
 
-# Lets look at this on the site
-start-process 'https://github.com/psdevopsug/git-fundamentals-demo'
+# Push the commit to the correct remote
+git push --set-upstream origin fix-alias
 
+# Lets have a look at the code on GitHub
+# and the different branches
+# see how different branches can have different code
+Start-Process 'https://github.com/psdevopsug/git-fundamentals-demo'
 
+# ===========================================
 #
-# Forking and Pull Request
-# =========================
+# DEMO 4 - Forking and Pull Request
+#
+# ===========================================
+
+# check the remote URL's
+git remote --verbose
 
 # Fork the repository to pauby
 start-process 'https://github.com/psdevopsug/git-fundamentals-demo'
 
-Set-Location $rootPath
+cd $rootPath
 git clone https://github.com/pauby/git-fundamentals-demo $forkRepoPath
-Set-Location (Join-Path -Path $rootPath -ChildPath $forkRepoPath)
+cd (Join-Path -Path $rootPath -ChildPath $forkRepoPath)
 
 # We need to set the original repository we will call the upstream
 git remote -v
@@ -97,11 +130,11 @@ git remote -v
 
 # We want to make a change and create a new branch
 git status
-git checkout -b remove-aliases
+git checkout -b pipe-output
 git status
-Get-ChildItem
+ls
 
-# Lets update the code to change the aliases
+# Lets update the code to add ` | Out-File setup.log`
 code setup.ps1
 
 # Let's check the status, stage the files and then commit them
@@ -110,18 +143,16 @@ git add .
 git status
 
 # Lets commit
-git commit -m 'Remove aliases'
+git commit -m 'Add loggin'
 git push
 git remote -v
-git push --set-upstream origin remove-aliases
-
-# Go to the forked repository and raise a pull request
+git push --set-upstream origin pipe-output
 
 # Now go to the fork and raise a pull request from remove-aliases to master
 start-process 'https://github.com/pauby/git-fundamentals-demo'
 
 #
-# Now the upstream repository is updated but we much update our fork
+# Now the upstream repository is updated but we must update our fork
 #
 
 # change to the master branch
@@ -138,3 +169,6 @@ start-process 'https://github.com/pauby/git-fundamentals-demo'
 
 # push those changes
 git push origin
+
+# lets see those changes after the push
+Start-Process 'https://github.com/pauby/git-fundamentals-demo'
