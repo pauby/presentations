@@ -12,6 +12,8 @@ Find out more about me and how to contact me:
 
 ## Presentation Dates
 
+* 19 October 2019 - [Hacktoberfest Glasgow] -Git Fundamentals
+
 * 13 September 2019 - [DATA:Scotland](https://datascotland.org) - [Git Fundamentals](https://github.com/pauby/presentations/tree/master/Git%20Fundamentals) - [[Slides](https://github.com/pauby/presentations/blob/master/Git%20Fundamentals/Git%20Fundamentals%20-%2020190913%20-%20DATAScotland.pdf)] | [[Code](https://github.com/pauby/presentations/tree/master/Git%20Fundamentals)]
 
 * 29 August 2019 - [Tech UG Glasgow](https://techug.org.uk/wp-content/uploads/2018/06/Glasgow-Agenda-Aug-2019.pdf) - [Click Free Application Deployment With The Magic Of PowerShell and Chocolatey](https://github.com/pauby/presentations/tree/master/Click%20Free%20Application%20Deployment) - [[Slides](https://github.com/pauby/presentations/blob/master/Click%20Free%20Application%20Deployment/Click%20Free%20Application%20Deployment%20With%20The%20Magic%20Of%20PowerShell%20and%20Chocolatey%20-%2020190829%20-%20Tech%20UG%20Glasgow.pdf)] | [[Code](https://github.com/pauby/presentations/tree/master/Click%20Free%20Application%20Deployment)]
