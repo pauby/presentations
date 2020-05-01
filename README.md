@@ -12,7 +12,7 @@ Find out more about me and how to contact me:
 
 ## Presentation Dates
 
-* 30 April 2020 - [BridgeConf](https://www.twitch.tv/bridgeconf) - [Automating The Software Deployment Lifecycle with Chocolatey, PowerShell and Jenkins ](https://blog.pauby.com/presentation/20200430-bridgeconf/) - [[Slides](https://blog.pauby.com/presentation/slides/20200430-bridgeconf/) | [Code](https://github.com/pauby/presentations/tree/master/Git%20Fundamentals/20200430-bridgeconf)]
+* 30 April 2020 - [BridgeConf](https://www.twitch.tv/bridgeconf) - [Automating The Software Deployment Lifecycle with Chocolatey, PowerShell and Jenkins ](https://blog.pauby.com/presentation/20200430-bridgeconf/) - [[Slides](https://blog.pauby.com/presentation/slides/20200430-bridgeconf/) | [Code](https://github.com/pauby/presentations/tree/master/Automating%20the%20Software%20Deployment%20Lifecycle/20200430-bridgeconf)]
 
 * 8 January 2020 - [Gainesville PowerShell User Group, Florida)(https://www.meetup.com/Gainesville-PowerShell-User-Group/events/267681647/) - [Click Free Application Deployment With The Magic of PowerShell and Chocolatey](https://blog.pauby.com/presentation/20200108-gainesville/) - [[Slides](https://blog.pauby.com/presentation/slides/20200108-gainesville/) | [Code](https://github.com/pauby/presentations/tree/master/Click%20Free%20Application%20Deployment)]
 
