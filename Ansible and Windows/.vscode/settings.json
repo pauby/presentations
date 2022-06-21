@@ -1,0 +1,10 @@
+{
+    "workbench.colorTheme": "PowerShell ISE",
+    "editor.fontWeight": "normal",
+    "window.zoomLevel": 3,
+    "customPresentationMode.backup": {
+        "workbench.colorTheme": "1984",
+        "editor.fontWeight": "normal",
+        "window.zoomLevel": 2
+    }
+}
