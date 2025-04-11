@@ -1,0 +1,61 @@
+{
+    "version": "1.0",
+    "common": {
+        "provision_scripts": [
+            {
+                "name": "Prepare Windows",
+                "path": "../shell/PrepareWindows.ps1"
+            },
+            {
+                "name": "Set Region to UK",
+                "path": "../shell/SetRegion.ps1",
+                "args": "-Region UK"
+            },
+            {
+                "name": "Install Chocolatey",
+                "path": "../shell/InstallChocolatey.ps1",
+                "args": "-UseLocalSource"
+            },
+            {
+                "name": "Refresh Environment",
+                "path": "../shell/NotifyGuiAppsOfEnvironmentChanges.ps1"
+            },
+            {
+                "name": "Install VM Guest Tools",
+                "path": "../shell/InstallVMGuestTools.ps1"
+            }
+        ],
+        "folders": [
+            {
+                "host_path": "../resources/packages",
+                "guest_path": "/packages"
+            }
+        ]
+    },
+    "machine": [
+        {
+            "name": "presentation",
+            "box": "StefanScherer/windows_2016",
+            "guest_os": "windows",
+            "cpu": "1",
+            "ram": "2048",
+            "communicator": "winrm",
+            "provision_scripts": [
+                {
+                    "name": "Provisioning Guest",
+                    "path": "vagrant-scripts/ProvisionGuest-Presentation.ps1"
+                }
+            ],
+            "folders": [
+                {
+                    "host_path": "demos",
+                    "guest_path": "/presentations"
+                },
+                {
+                    "host_path": "../resources/packages",
+                    "guest_path": "/packages"
+                }
+            ]
+        }
+    ]
+}

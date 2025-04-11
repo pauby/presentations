@@ -3,7 +3,7 @@
   gather_facts: false
 
   tasks:
-    - name: 'Create PS Conf EU 2022 demo file'
-      pauby.psconfeu2022.win_psconfeu2022_file:
-        name: 'psconfeu2022_test'
+    - name: 'Create demo file'
+      pauby.myfirstwinmodule.win_demo_file:
+        name: 'demo_test'
         state: 'absent'

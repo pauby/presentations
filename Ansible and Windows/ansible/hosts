@@ -1,8 +1,12 @@
 all:
   hosts:
-    psconfeu2022:
-      ansible_host: '192.168.191.205'
-      ansible_winrm_server_cert_validation: 'ignore'
-      ansible_connection: 'winrm'
-      ansible_port: '5985'
-      ansible_winrm_transport: 'ntlm'
+    demo_host:
+      ansible_host: '192.168.122.245'
+      # WinRM
+      # ansible_winrm_server_cert_validation: 'ignore'
+      # ansible_connection: 'winrm'
+      # ansible_port: '5985'
+      # ansible_winrm_transport: 'ntlm'
+      # OpenSSH
+      ansible_connection: 'ssh'
+      ansible_shell_type: 'powershell'

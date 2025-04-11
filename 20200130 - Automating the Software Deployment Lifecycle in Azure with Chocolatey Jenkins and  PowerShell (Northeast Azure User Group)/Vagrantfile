@@ -1,0 +1,154 @@
+unless Vagrant.has_plugin?("vagrant-reload")
+  raise 'vagrant-reload is not installed!'
+end
+
+Vagrant.configure("2") do |config|
+
+  config.vm.define "presentation" do |cfg|
+
+    #
+    # Variables
+    #
+    folder_syncs = [
+      { host_path: '../resources',           guest_path: '/resources' },
+      { host_path: '../shared/shell',        guest_path: '/shell' }
+      # don't share htis path out - if you do Jenkins cannot access the scripts
+      # { host_path: 'assets/jenkins-scripts', guest_path: '/scripts' }
+#      { host_path: 'presentations',         guest_path: '/presentations' }
+    ]
+
+    cfg.vm.box = "StefanScherer/windows_2016"
+    cfg.vm.hostname = "presentation"
+
+    cfg.windows.halt_timeout = 60
+    # https://github.com/hashicorp/vagrant/issues/6430
+    cfg.winrm.retry_limit = 30
+    cfg.winrm.retry_delay = 10
+
+    cfg.winrm.username = "vagrant"
+    cfg.winrm.password = "vagrant"
+    cfg.vm.guest = :windows
+    cfg.vm.communicator = "winrm"
+
+    cfg.windows.set_work_network = true
+
+    cfg.vm.network :forwarded_port, guest: 5985, host: 5985, id: "winrm", auto_correct: true, host_ip: "127.0.0.1"
+    cfg.vm.network :forwarded_port, guest: 3389, host: 3389, id: "rdp", auto_correct: true, host_ip: "127.0.0.1"
+    cfg.vm.network :forwarded_port, guest: 22, host: 2222, id: "ssh", auto_correct: true, host_ip: "127.0.0.1"
+
+    folder_syncs.each do |folder|
+      cfg.vm.synced_folder folder[:host_path], folder[:guest_path]
+    end
+
+    # set these environment varaibles as we will need them later
+    cfg.vm.provision "Add Environment Variables", type: "shell", run: "once", privileged: true, inline: <<-SHELL
+      [System.Environment]::SetEnvironmentVariable("LocalChocoPackages", "c:/resources/packages", "Machine")
+      [System.Environment]::SetEnvironmentVariable("LocalChocoLicenses", "c:/resources/licenses", "Machine")
+      [System.Environment]::SetEnvironmentVariable("PresentationDemosRoot", "c:/vagrant/demos", "Machine")
+    SHELL
+
+    # copy the scripts over - note that if the scripts are shared via synced-folder Jenkins cannot access them
+    cfg.vm.provision "Copying assets to guest ...", type: "file", source: "assets/jenkins-scripts", destination: "c:/scripts"
+
+    # if 7zip.install is not int he local packages repo then download it as it is needed by the demo - maybe add this to the setup script
+
+    cfg.vm.provision :shell, :path => "../../shared/shell/ConfigureAutoLogin.ps1", privileged: true
+    cfg.vm.provision :shell, :path => "../../shared/shell/PrepareWindows.ps1", privileged: true
+    cfg.vm.provision :shell, :path => "../../shared/shell/SetRegion.ps1", args: "-Region 'UK'", privileged: true
+    cfg.vm.provision :shell, :path => "../../shared/shell/InstallChocolatey.ps1", args: "-UseLocalSource", run: "once", privileged: true
+    cfg.vm.provision :shell, :path => "../../shared/shell/NotifyGuiAppsOfEnvironmentChanges.ps1", run: "once", privileged: true
+    cfg.vm.provision :shell, :path => "../../shared/shell/DeployChocolateyLicense.ps1", args: "-LicenseType Bus -LicenseRootPath $env:LocalChocoLicenses", run: "once", privileged: true
+    cfg.vm.provision :shell, :path => "../../shared/shell/InstallVMGuestTools.ps1", run: "once", privileged: true
+    cfg.vm.provision :shell, :path => "../../shared/shell/InstallChocolateyPackage.ps1", args: "-Name 'vscode, vscode-powershell, pester, zoomit, notepadplusplus, 7zip, firefox'", run: "once", privileged: true
+    cfg.vm.provision :shell, :path => "shell/ProvisionChocolateyServerForJenkins.ps1", run: "once", privileged: true
+    cfg.vm.provision :shell, :path => "../../shared/shell/ProvisionJenkins.ps1", args: "-ConfigurationPath c:/vagrant/assets/jenkins-config.zip", run: "once", privileged: true
+
+    # reload machine to have the auto-login and bginfo kick in
+    cfg.vm.provision :reload
+
+    cfg.vm.provision "Add Desktop Presentation Shortcuts", type: "shell", run: "once", privileged: true, inline: <<-SHELL
+      # Taken from https://stackoverflow.com/questions/28997799/how-to-create-a-run-as-administrator-shortcut-using-powershell
+      $WshShell = New-Object -comObject WScript.Shell
+      $Shortcut = $WshShell.CreateShortcut("$Home\\Desktop\\VS Code Presentation.lnk")
+      $Shortcut.TargetPath = "C:\\Program Files\\Microsoft VS Code\\Code.exe"
+      $Shortcut.Arguments = "$env:PresentationDemosRoot"
+      $Shortcut.Save()
+
+      # For VS Code to be able to open a sharedsynced folder, it needs to be run as Administrator
+      $bytes = [System.IO.File]::ReadAllBytes("$Home\\Desktop\\VS Code Presentation.lnk")
+      $bytes[0x15] = $bytes[0x15] -bor 0x20 #set byte 21 (0x15) bit 6 (0x20) ON
+      [System.IO.File]::WriteAllBytes("$Home\\Desktop\\VS Code Presentation.lnk", $bytes)
+
+      #git clone https://github.com/pauby/presentations c:\\git-presentations --depth 1 -q
+      Remove-Variable -Name 'Shortcut' -Force -ErrorAction SilentlyContinue
+      $WshShell = New-Object -comObject WScript.Shell
+      $Shortcut = $WshShell.CreateShortcut("$Home\\Desktop\\Open Jenkins.lnk")
+      $Shortcut.TargetPath = "C:/Program Files/Mozilla Firefox/firefox.exe"
+      $Shortcut.Arguments = "http://localhost:8080"
+      $Shortcut.Save()
+    SHELL
+
+    cfg.vm.provision "Create Zoomit Startup Shortcut", type: "shell", run: "once", privileged: true, inline: <<-SHELL
+      $WshShell = New-Object -comObject WScript.Shell
+      $link = Join-Path -Path ([Environment]::GetFolderPath('Startup')) -ChildPath 'Zoomit.lnk'
+      $Shortcut = $WshShell.CreateShortcut($link)
+      $Shortcut.TargetPath = (Join-Path -Path $env:ChocolateyInstall -Childpath 'bin\\zoomit.exe')
+      $Shortcut.Save()
+
+      # Launch Zoomit
+      & (Join-Path -Path $env:ChocolateyInstall -Childpath 'bin/zoomit.exe')
+    SHELL
+
+    cfg.vm.post_up_message = "All done!"
+
+        #
+    # Providers
+    #
+    cfg.vm.provider :virtualbox do |v, override|
+      v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+      v.gui = true
+      v.customize ["modifyvm", :id, "--cpus", "2"]
+      # turn on nested virtualization
+      v.customize ["modifyvm", :id, "--nested-hw-virt", "on"]
+      v.customize ["modifyvm", :id, "--vram", 128]
+      v.customize ["modifyvm", :id, "--memory", "4096"]
+      v.customize ["modifyvm", :id, "--audio", "none"]
+      v.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
+      v.customize ["modifyvm", :id, "--draganddrop", "hosttoguest"]
+      v.customize ["modifyvm", :id, "--usb", "off"]
+      v.linked_clone = true
+    end
+
+    config.vm.provider :hyperv do |v, override|
+      # check the default_switch for the machine first of all as it will
+      if ENV['VAGRANT_HYPERV_NETWORK_SWITCH'] != nil
+        override.vm.network "public_network", bridge: ENV['VAGRANT_HYPERV_NETWORK_SWITCH']
+      else
+        override.vm.network "public_network", bridge: "Default Switch"
+      end
+
+      v.enable_virtualization_extensions = true
+      v.maxmemory = 4096
+      v.cpus = 2
+      v.ip_address_timeout = 130
+      v.linked_clone = true
+      v.vm_integration_services = {
+        guest_service_interface: true,
+        heartbeat: true,
+        key_value_pair_exchange: true,
+        shutdown: true,
+        time_synchronization: true,
+        vss: true
+      }
+
+      if ENV['VAGRANT_HYPERV_SMB_USERNAME'] != nil and ENV['VAGRANT_HYPERV_SMB_PASSWORD'] != nil
+        folder_syncs.each do |folder|
+          #print "Folder sync local: #{folder[:local]} | guest_path: #{folder[:guest_path]} | smb_username: #{folder[:smb_username]} | smb_password: #{folder[:smb_password]}"
+          override.vm.synced_folder folder[:host_path], folder[:guest_path], smb_username: ENV['VAGRANT_HYPERV_SMB_USERNAME'], smb_password: ENV['VAGRANT_HYPERV_SMB_PASSWORD']
+        end
+      end
+
+      override.vm.provision "Stop SMB Idle Disconnects", type: 'shell', run: 'once', privileged: true, inline: 'net config server /autodisconnect:-1'
+    end #hyper-v
+  end
+end
